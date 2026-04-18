@@ -1,11 +1,6 @@
 import Project from "../models/Project.js";
 import User from "../models/User.js";
 
-// ─────────────────────────────────────────
-// @route   POST /api/projects
-// @desc    Create new project
-// @access  Private
-// ─────────────────────────────────────────
 export const createProject = async (req, res) => {
   try {
     const { title, description, color, icon } = req.body;
@@ -17,18 +12,16 @@ export const createProject = async (req, res) => {
       });
     }
 
-    // Create project — owner is logged in user
     const project = await Project.create({
       title,
       description,
       color: color || "#3b82f6",
       icon: icon || "🚀",
       owner: req.user._id,
-      // Owner is also a member with admin role
+
       members: [{ user: req.user._id, role: "admin" }],
     });
 
-    // Populate owner and members for response
     const populatedProject = await Project.findById(project._id)
       .populate("owner", "name email avatar")
       .populate("members.user", "name email avatar");
@@ -53,20 +46,14 @@ export const createProject = async (req, res) => {
   }
 };
 
-// ─────────────────────────────────────────
-// @route   GET /api/projects
-// @desc    Get all projects for logged in user
-// @access  Private
-// ─────────────────────────────────────────
 export const getProjects = async (req, res) => {
   try {
-    // Find projects where user is owner OR a member
     const projects = await Project.find({
       $or: [{ owner: req.user._id }, { "members.user": req.user._id }],
     })
       .populate("owner", "name email avatar")
       .populate("members.user", "name email avatar")
-      .sort({ createdAt: -1 }); // newest first
+      .sort({ createdAt: -1 });
 
     res.status(200).json({
       success: true,
@@ -80,11 +67,6 @@ export const getProjects = async (req, res) => {
   }
 };
 
-// ─────────────────────────────────────────
-// @route   GET /api/projects/:id
-// @desc    Get single project
-// @access  Private
-// ─────────────────────────────────────────
 export const getProjectById = async (req, res) => {
   try {
     const project = await Project.findById(req.params.id)
@@ -98,7 +80,6 @@ export const getProjectById = async (req, res) => {
       });
     }
 
-    // Check if user has access
     const isMember = project.members.some(
       (m) => m.user._id.toString() === req.user._id.toString(),
     );
@@ -123,11 +104,6 @@ export const getProjectById = async (req, res) => {
   }
 };
 
-// ─────────────────────────────────────────
-// @route   PUT /api/projects/:id
-// @desc    Update project
-// @access  Private (owner/admin only)
-// ─────────────────────────────────────────
 export const updateProject = async (req, res) => {
   try {
     const project = await Project.findById(req.params.id);
@@ -139,7 +115,6 @@ export const updateProject = async (req, res) => {
       });
     }
 
-    // Only owner can update
     if (project.owner.toString() !== req.user._id.toString()) {
       return res.status(403).json({
         success: false,
@@ -170,11 +145,6 @@ export const updateProject = async (req, res) => {
   }
 };
 
-// ─────────────────────────────────────────
-// @route   DELETE /api/projects/:id
-// @desc    Delete project
-// @access  Private (owner only)
-// ─────────────────────────────────────────
 export const deleteProject = async (req, res) => {
   try {
     const project = await Project.findById(req.params.id);
@@ -207,11 +177,6 @@ export const deleteProject = async (req, res) => {
   }
 };
 
-// ─────────────────────────────────────────
-// @route   POST /api/projects/:id/members
-// @desc    Add member to project by email
-// @access  Private (owner only)
-// ─────────────────────────────────────────
 export const addMember = async (req, res) => {
   try {
     const { email, role } = req.body;
@@ -232,7 +197,6 @@ export const addMember = async (req, res) => {
       });
     }
 
-    // Only owner can add members
     if (project.owner.toString() !== req.user._id.toString()) {
       return res.status(403).json({
         success: false,
@@ -240,7 +204,6 @@ export const addMember = async (req, res) => {
       });
     }
 
-    // Find user by email
     const userToAdd = await User.findOne({ email });
     if (!userToAdd) {
       return res.status(404).json({
@@ -249,7 +212,6 @@ export const addMember = async (req, res) => {
       });
     }
 
-    // Check if already a member
     const alreadyMember = project.members.some(
       (m) => m.user.toString() === userToAdd._id.toString(),
     );
@@ -285,11 +247,6 @@ export const addMember = async (req, res) => {
   }
 };
 
-// ─────────────────────────────────────────
-// @route   DELETE /api/projects/:id/members/:userId
-// @desc    Remove member from project
-// @access  Private (owner only)
-// ─────────────────────────────────────────
 export const removeMember = async (req, res) => {
   try {
     const project = await Project.findById(req.params.id);
@@ -308,7 +265,6 @@ export const removeMember = async (req, res) => {
       });
     }
 
-    // Cannot remove owner
     if (project.owner.toString() === req.params.userId) {
       return res.status(400).json({
         success: false,

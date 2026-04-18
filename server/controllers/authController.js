@@ -62,7 +62,6 @@ export const login = async (req, res) => {
   try {
     const { email, password } = req.body;
 
-    // 1. Validate fields
     if (!email || !password) {
       return res.status(400).json({
         success: false,
@@ -106,7 +105,6 @@ export const login = async (req, res) => {
 
 export const getMe = async (req, res) => {
   try {
-    // req.user is set by auth middleware (Day 4)
     const user = await User.findById(req.user.id);
 
     if (!user) {

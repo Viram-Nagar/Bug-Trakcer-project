@@ -1,8 +1,6 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import projectService from "../../services/projectService.js";
 
-// ─── THUNKS ───────────────────────────────────────────
-
 export const fetchProjects = createAsyncThunk(
   "projects/fetchAll",
   async (_, thunkAPI) => {
@@ -50,7 +48,7 @@ export const deleteProject = createAsyncThunk(
   async (id, thunkAPI) => {
     try {
       await projectService.deleteProject(id);
-      return id; // return id to remove from state
+      return id;
     } catch (error) {
       return thunkAPI.rejectWithValue(
         error.response?.data?.message || "Failed to delete project",
@@ -87,8 +85,6 @@ export const removeMember = createAsyncThunk(
   },
 );
 
-// ─── SLICE ────────────────────────────────────────────
-
 const initialState = {
   projects: [],
   currentProject: null,
@@ -112,7 +108,6 @@ const projectSlice = createSlice({
   extraReducers: (builder) => {
     builder
 
-      // ── Fetch All ──────────────────────────
       .addCase(fetchProjects.pending, (state) => {
         state.isLoading = true;
         state.error = null;
@@ -126,14 +121,13 @@ const projectSlice = createSlice({
         state.error = action.payload;
       })
 
-      // ── Create ─────────────────────────────
       .addCase(createProject.pending, (state) => {
         state.isLoading = true;
         state.error = null;
       })
       .addCase(createProject.fulfilled, (state, action) => {
         state.isLoading = false;
-        // Add new project to beginning of list
+
         state.projects.unshift(action.payload.data.project);
       })
       .addCase(createProject.rejected, (state, action) => {
@@ -141,7 +135,6 @@ const projectSlice = createSlice({
         state.error = action.payload;
       })
 
-      // ── Update ─────────────────────────────
       .addCase(updateProject.fulfilled, (state, action) => {
         const updated = action.payload.data.project;
         const index = state.projects.findIndex((p) => p._id === updated._id);
@@ -151,7 +144,6 @@ const projectSlice = createSlice({
         }
       })
 
-      // ── Delete ─────────────────────────────
       .addCase(deleteProject.fulfilled, (state, action) => {
         state.projects = state.projects.filter((p) => p._id !== action.payload);
         if (state.currentProject?._id === action.payload) {
@@ -159,7 +151,6 @@ const projectSlice = createSlice({
         }
       })
 
-      // ── Add Member ─────────────────────────
       .addCase(addMember.fulfilled, (state, action) => {
         const updated = action.payload.data.project;
         const index = state.projects.findIndex((p) => p._id === updated._id);
@@ -169,7 +160,6 @@ const projectSlice = createSlice({
         }
       })
 
-      // ── Remove Member ──────────────────────
       .addCase(removeMember.fulfilled, (state, action) => {
         const updated = action.payload.data.project;
         const index = state.projects.findIndex((p) => p._id === updated._id);
@@ -183,7 +173,6 @@ const projectSlice = createSlice({
 
 export const { setCurrentProject, clearProjectError } = projectSlice.actions;
 
-// Selectors
 export const selectProjects = (state) => state.projects.projects;
 export const selectCurrentProject = (state) => state.projects.currentProject;
 export const selectProjectLoading = (state) => state.projects.isLoading;

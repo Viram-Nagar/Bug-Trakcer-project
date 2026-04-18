@@ -2,16 +2,10 @@ import Comment from "../models/Comment.js";
 import Ticket from "../models/Ticket.js";
 import Project from "../models/Project.js";
 
-// ── Helper ────────────────────────────────────────────
 const isProjectMember = (project, userId) => {
   return project.members.some((m) => m.user.toString() === userId.toString());
 };
 
-// ─────────────────────────────────────────
-// @route   POST /api/comments
-// @desc    Add comment to a ticket
-// @access  Private (project members)
-// ─────────────────────────────────────────
 export const addComment = async (req, res) => {
   try {
     const { ticketId, text, parentCommentId } = req.body;
@@ -23,7 +17,6 @@ export const addComment = async (req, res) => {
       });
     }
 
-    // Verify ticket exists
     const ticket = await Ticket.findById(ticketId);
     if (!ticket) {
       return res.status(404).json({
@@ -32,7 +25,6 @@ export const addComment = async (req, res) => {
       });
     }
 
-    // Verify user is project member
     const project = await Project.findById(ticket.project);
     if (!isProjectMember(project, req.user._id)) {
       return res.status(403).json({
@@ -41,7 +33,6 @@ export const addComment = async (req, res) => {
       });
     }
 
-    // If replying — verify parent comment exists
     if (parentCommentId) {
       const parent = await Comment.findById(parentCommentId);
       if (!parent) {
@@ -52,7 +43,6 @@ export const addComment = async (req, res) => {
       }
     }
 
-    // Create comment
     const comment = await Comment.create({
       ticket: ticketId,
       author: req.user._id,
@@ -60,7 +50,6 @@ export const addComment = async (req, res) => {
       parentComment: parentCommentId || null,
     });
 
-    // Populate author for response
     const populated = await Comment.findById(comment._id).populate(
       "author",
       "name email avatar",
@@ -80,16 +69,10 @@ export const addComment = async (req, res) => {
   }
 };
 
-// ─────────────────────────────────────────
-// @route   GET /api/comments/ticket/:ticketId
-// @desc    Get all comments for a ticket
-// @access  Private (project members)
-// ─────────────────────────────────────────
 export const getCommentsByTicket = async (req, res) => {
   try {
     const { ticketId } = req.params;
 
-    // Verify ticket exists
     const ticket = await Ticket.findById(ticketId);
     if (!ticket) {
       return res.status(404).json({
@@ -98,7 +81,6 @@ export const getCommentsByTicket = async (req, res) => {
       });
     }
 
-    // Verify user is project member
     const project = await Project.findById(ticket.project);
     if (!isProjectMember(project, req.user._id)) {
       return res.status(403).json({
@@ -107,14 +89,13 @@ export const getCommentsByTicket = async (req, res) => {
       });
     }
 
-    // Fetch all non-deleted comments for ticket
     const comments = await Comment.find({
       ticket: ticketId,
       isDeleted: false,
     })
       .populate("author", "name email avatar")
       .populate("parentComment", "text author")
-      .sort({ createdAt: 1 }); // oldest first
+      .sort({ createdAt: 1 });
 
     res.status(200).json({
       success: true,
@@ -128,11 +109,6 @@ export const getCommentsByTicket = async (req, res) => {
   }
 };
 
-// ─────────────────────────────────────────
-// @route   PUT /api/comments/:id
-// @desc    Edit a comment
-// @access  Private (author only)
-// ─────────────────────────────────────────
 export const updateComment = async (req, res) => {
   try {
     const { text } = req.body;
@@ -153,7 +129,6 @@ export const updateComment = async (req, res) => {
       });
     }
 
-    // Only author can edit
     if (comment.author.toString() !== req.user._id.toString()) {
       return res.status(403).json({
         success: false,
@@ -182,11 +157,6 @@ export const updateComment = async (req, res) => {
   }
 };
 
-// ─────────────────────────────────────────
-// @route   DELETE /api/comments/:id
-// @desc    Delete a comment (soft delete)
-// @access  Private (author only)
-// ─────────────────────────────────────────
 export const deleteComment = async (req, res) => {
   try {
     const comment = await Comment.findById(req.params.id);
@@ -198,7 +168,6 @@ export const deleteComment = async (req, res) => {
       });
     }
 
-    // Only author can delete
     if (comment.author.toString() !== req.user._id.toString()) {
       return res.status(403).json({
         success: false,
@@ -206,7 +175,6 @@ export const deleteComment = async (req, res) => {
       });
     }
 
-    // Soft delete — keeps thread structure intact
     comment.isDeleted = true;
     await comment.save();
 

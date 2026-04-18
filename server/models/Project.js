@@ -17,14 +17,12 @@ const projectSchema = new mongoose.Schema(
       default: "",
     },
 
-    // Who created the project
     owner: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
       required: true,
     },
 
-    // Team members array
     members: [
       {
         user: {
@@ -39,20 +37,17 @@ const projectSchema = new mongoose.Schema(
       },
     ],
 
-    // Project status
     status: {
       type: String,
       enum: ["active", "on-hold", "completed"],
       default: "active",
     },
 
-    // Color tag for UI
     color: {
       type: String,
       default: "#3b82f6",
     },
 
-    // Emoji icon for UI
     icon: {
       type: String,
       default: "🚀",
@@ -60,7 +55,7 @@ const projectSchema = new mongoose.Schema(
   },
   {
     timestamps: true,
-    // Virtual field for ticket count (Day 4)
+
     toJSON: { virtuals: true },
     toObject: { virtuals: true },
   },

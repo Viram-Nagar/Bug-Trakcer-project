@@ -1,8 +1,6 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import commentService from "../../services/commentService.js";
 
-// ─── THUNKS ───────────────────────────────────────────
-
 export const fetchComments = createAsyncThunk(
   "comments/fetchByTicket",
   async (ticketId, thunkAPI) => {
@@ -63,8 +61,6 @@ export const deleteComment = createAsyncThunk(
   },
 );
 
-// ─── SLICE ────────────────────────────────────────────
-
 const commentSlice = createSlice({
   name: "comments",
   initialState: {
@@ -86,8 +82,6 @@ const commentSlice = createSlice({
 
   extraReducers: (builder) => {
     builder
-
-      // ── Fetch ──────────────────────────────
       .addCase(fetchComments.pending, (state) => {
         state.isLoading = true;
         state.error = null;
@@ -101,14 +95,12 @@ const commentSlice = createSlice({
         state.error = action.payload;
       })
 
-      // ── Add ────────────────────────────────
       .addCase(addComment.pending, (state) => {
         state.isSubmitting = true;
         state.error = null;
       })
       .addCase(addComment.fulfilled, (state, action) => {
         state.isSubmitting = false;
-        // Add to end of list (oldest first order)
         state.comments.push(action.payload.data.comment);
       })
       .addCase(addComment.rejected, (state, action) => {
@@ -116,14 +108,12 @@ const commentSlice = createSlice({
         state.error = action.payload;
       })
 
-      // ── Update ─────────────────────────────
       .addCase(updateComment.fulfilled, (state, action) => {
         const updated = action.payload.data.comment;
         const index = state.comments.findIndex((c) => c._id === updated._id);
         if (index !== -1) state.comments[index] = updated;
       })
 
-      // ── Delete ─────────────────────────────
       .addCase(deleteComment.fulfilled, (state, action) => {
         const deletedId = action.payload.data.commentId;
         state.comments = state.comments.filter((c) => c._id !== deletedId);
@@ -133,7 +123,6 @@ const commentSlice = createSlice({
 
 export const { clearComments, clearCommentError } = commentSlice.actions;
 
-// ─── SELECTORS ────────────────────────────────────────
 export const selectComments = (state) => state.comments.comments;
 export const selectCommentLoading = (state) => state.comments.isLoading;
 export const selectCommentSubmitting = (state) => state.comments.isSubmitting;

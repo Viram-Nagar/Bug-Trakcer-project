@@ -12,7 +12,6 @@ import authMiddleware from "../middleware/authMiddleware.js";
 
 const router = express.Router();
 
-// All project routes are protected
 router.use(authMiddleware);
 
 router.route("/").get(getProjects).post(createProject);

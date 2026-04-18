@@ -25,8 +25,6 @@ import {
 import { CommentSkeleton } from "../common/Skeleton";
 import { selectUser } from "../../features/auth/authSlice";
 
-// ── Single Comment Item ───────────────────────────────
-
 function CommentItem({ comment, onReply, onEdit, onDelete, currentUser }) {
   const isAuthor =
     comment.author?._id === currentUser?._id ||
@@ -70,9 +68,7 @@ function CommentItem({ comment, onReply, onEdit, onDelete, currentUser }) {
           </div>
         </div>
 
-        {/* Comment Body */}
         <div className="flex-1 min-w-0">
-          {/* Author + Time */}
           <div className="flex items-center gap-2 mb-1 flex-wrap">
             <span className="text-sm font-semibold text-gray-900">
               {comment.author?.name}
@@ -90,7 +86,6 @@ function CommentItem({ comment, onReply, onEdit, onDelete, currentUser }) {
             )}
           </div>
 
-          {/* Reply indicator */}
           {comment.parentComment && (
             <div
               className="flex items-center gap-1.5 mb-1.5 text-xs
@@ -102,7 +97,6 @@ function CommentItem({ comment, onReply, onEdit, onDelete, currentUser }) {
             </div>
           )}
 
-          {/* Comment Text */}
           <div
             className="bg-gray-50 rounded-xl rounded-tl-sm px-4
                           py-3 text-sm text-gray-800 leading-relaxed
@@ -111,9 +105,7 @@ function CommentItem({ comment, onReply, onEdit, onDelete, currentUser }) {
             {comment.text}
           </div>
 
-          {/* Actions */}
           <div className="flex items-center gap-3 mt-1.5 ml-1">
-            {/* Reply button — always visible */}
             <button
               onClick={() => onReply(comment)}
               className="flex items-center gap-1 text-xs text-gray-400
@@ -123,7 +115,6 @@ function CommentItem({ comment, onReply, onEdit, onDelete, currentUser }) {
               Reply
             </button>
 
-            {/* Edit + Delete — only for author */}
             {isAuthor && (
               <>
                 <button
@@ -151,8 +142,6 @@ function CommentItem({ comment, onReply, onEdit, onDelete, currentUser }) {
   );
 }
 
-// ── Main CommentSection ───────────────────────────────
-
 function CommentSection({ ticketId, canComment = true }) {
   const dispatch = useDispatch();
   const comments = useSelector(selectComments);
@@ -168,7 +157,6 @@ function CommentSection({ ticketId, canComment = true }) {
   const textareaRef = useRef(null);
   const editTextareaRef = useRef(null);
 
-  // Fetch comments on mount
   useEffect(() => {
     if (ticketId) {
       dispatch(fetchComments(ticketId));
@@ -178,21 +166,17 @@ function CommentSection({ ticketId, canComment = true }) {
     };
   }, [dispatch, ticketId]);
 
-  // Focus textarea when replying
   useEffect(() => {
     if (replyTo && textareaRef.current) {
       textareaRef.current.focus();
     }
   }, [replyTo]);
 
-  // Focus edit textarea
   useEffect(() => {
     if (editingComment && editTextareaRef.current) {
       editTextareaRef.current.focus();
     }
   }, [editingComment]);
-
-  // ── Handlers ───────────────────────────────────────
 
   const handleSubmit = async (e) => {
     e?.preventDefault();
@@ -216,7 +200,6 @@ function CommentSection({ ticketId, canComment = true }) {
   };
 
   const handleKeyDown = (e) => {
-    // Submit on Ctrl+Enter or Cmd+Enter
     if ((e.ctrlKey || e.metaKey) && e.key === "Enter") {
       handleSubmit();
     }
@@ -265,14 +248,10 @@ function CommentSection({ ticketId, canComment = true }) {
     }
   };
 
-  // ── Auto resize textarea ───────────────────────────
-
   const autoResize = (e) => {
     e.target.style.height = "auto";
     e.target.style.height = `${Math.min(e.target.scrollHeight, 160)}px`;
   };
-
-  // ─────────────────────────────────────────────────
 
   return (
     <div className="space-y-6">
@@ -289,7 +268,6 @@ function CommentSection({ ticketId, canComment = true }) {
         </h3>
       </div>
 
-      {/* Comments List */}
       {isLoading ? (
         <div className="space-y-4">
           {[1, 2, 3].map((i) => (
@@ -314,7 +292,6 @@ function CommentSection({ ticketId, canComment = true }) {
                 {/* Indent replies */}
                 <div className={comment.parentComment ? "ml-10" : ""}>
                   {editingComment?._id === comment._id ? (
-                    // ── Inline Edit Form ──────────────
                     <motion.div
                       initial={{ opacity: 0 }}
                       animate={{ opacity: 1 }}
@@ -391,7 +368,6 @@ function CommentSection({ ticketId, canComment = true }) {
       {canComment ? (
         <div className="pt-4 border-t border-gray-100">
           <div className="pt-4 border-t border-gray-100">
-            {/* Reply indicator banner */}
             <AnimatePresence>
               {replyTo && (
                 <motion.div
@@ -426,7 +402,6 @@ function CommentSection({ ticketId, canComment = true }) {
               )}
             </AnimatePresence>
 
-            {/* Comment Input */}
             <div className="flex gap-3">
               {/* Current user avatar */}
               <div className="flex-shrink-0">
@@ -439,7 +414,6 @@ function CommentSection({ ticketId, canComment = true }) {
                 </div>
               </div>
 
-              {/* Textarea + Submit */}
               <div className="flex-1">
                 <div
                   className="relative border border-gray-200 rounded-xl
@@ -467,7 +441,6 @@ function CommentSection({ ticketId, canComment = true }) {
                            placeholder:text-gray-300"
                   />
 
-                  {/* Toolbar */}
                   <div
                     className="flex items-center justify-between
                               px-3 pb-2.5 pt-1"
@@ -520,125 +493,8 @@ function CommentSection({ ticketId, canComment = true }) {
           </div>
         </div>
       )}
-
-      {/* ── Add Comment Form ─────────────────────────── */}
     </div>
   );
 }
 
 export default CommentSection;
-
-{
-  /* ── Add Comment Form ─────────────────────────── */
-}
-// <div className="pt-4 border-t border-gray-100">
-//         {/* Reply indicator banner */}
-//         <AnimatePresence>
-//           {replyTo && (
-//             <motion.div
-//               initial={{ opacity: 0, y: -5 }}
-//               animate={{ opacity: 1, y: 0 }}
-//               exit={{ opacity: 0, y: -5 }}
-//               className="flex items-center justify-between bg-blue-50
-//                          border border-blue-100 rounded-xl px-4 py-2.5
-//                          mb-3 text-sm"
-//             >
-//               <div
-//                 className="flex items-center gap-2 text-blue-700
-//                               min-w-0"
-//               >
-//                 <CornerDownRight className="w-4 h-4 flex-shrink-0" />
-//                 <span className="truncate">
-//                   Replying to <strong>{replyTo.author?.name}</strong>:{" "}
-//                   <span className="font-normal opacity-75">
-//                     {replyTo.text.substring(0, 50)}
-//                     {replyTo.text.length > 50 ? "..." : ""}
-//                   </span>
-//                 </span>
-//               </div>
-//               <button
-//                 onClick={() => setReplyTo(null)}
-//                 className="ml-2 text-blue-400 hover:text-blue-600
-//                            flex-shrink-0 p-1"
-//               >
-//                 <X className="w-4 h-4" />
-//               </button>
-//             </motion.div>
-//           )}
-//         </AnimatePresence>
-
-//         {/* Comment Input */}
-//         <div className="flex gap-3">
-//           {/* Current user avatar */}
-//           <div className="flex-shrink-0">
-//             <div
-//               className="w-8 h-8 rounded-full bg-gradient-to-br
-//                             from-blue-400 to-indigo-500 flex items-center
-//                             justify-center text-white text-xs font-bold"
-//             >
-//               {currentUser?.name?.charAt(0).toUpperCase()}
-//             </div>
-//           </div>
-
-//           {/* Textarea + Submit */}
-//           <div className="flex-1">
-//             <div
-//               className="relative border border-gray-200 rounded-xl
-//                             focus-within:border-blue-400 focus-within:ring-2
-//                             focus-within:ring-blue-100 transition-all
-//                             bg-white overflow-hidden"
-//             >
-//               <textarea
-//                 ref={textareaRef}
-//                 value={text}
-//                 onChange={(e) => {
-//                   setText(e.target.value);
-//                   autoResize(e);
-//                 }}
-//                 onKeyDown={handleKeyDown}
-//                 placeholder={
-//                   replyTo
-//                     ? `Reply to ${replyTo.author?.name}...`
-//                     : "Add a comment... (Ctrl+Enter to submit)"
-//                 }
-//                 rows={3}
-//                 maxLength={1000}
-//                 className="w-full px-4 pt-3 pb-2 text-sm resize-none
-//                            focus:outline-none bg-transparent
-//                            placeholder:text-gray-300"
-//               />
-
-//               {/* Toolbar */}
-//               <div
-//                 className="flex items-center justify-between
-//                               px-3 pb-2.5 pt-1"
-//               >
-//                 <span className="text-xs text-gray-300">
-//                   {text.length}/1000
-//                 </span>
-
-//                 <button
-//                   onClick={handleSubmit}
-//                   disabled={isSubmitting || !text.trim()}
-//                   className="flex items-center gap-1.5 bg-blue-600
-//                              hover:bg-blue-700 text-white text-xs
-//                              font-medium px-3 py-1.5 rounded-lg
-//                              transition-colors disabled:opacity-50
-//                              disabled:cursor-not-allowed"
-//                 >
-//                   {isSubmitting ? (
-//                     <Loader2 className="w-3.5 h-3.5 animate-spin" />
-//                   ) : (
-//                     <Send className="w-3.5 h-3.5" />
-//                   )}
-//                   {isSubmitting ? "Sending..." : "Comment"}
-//                 </button>
-//               </div>
-//             </div>
-
-//             <p className="text-xs text-gray-300 mt-1.5 ml-1">
-//               Ctrl+Enter to submit · Esc to cancel edit
-//             </p>
-//           </div>
-//         </div>
-//       </div>

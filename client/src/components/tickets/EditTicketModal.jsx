@@ -22,7 +22,6 @@ function EditTicketModal({ isOpen, onClose, ticket, members = [] }) {
     dueDate: "",
   });
 
-  // Pre-fill form when ticket changes
   useEffect(() => {
     if (ticket) {
       setFormData({

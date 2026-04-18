@@ -9,7 +9,6 @@ const api = axios.create({
   },
 });
 
-// Auto-attach token to every request
 api.interceptors.request.use(
   (config) => {
     const token = store.getState().auth.token;
@@ -21,7 +20,6 @@ api.interceptors.request.use(
   (error) => Promise.reject(error),
 );
 
-// Auto-logout if token expires
 api.interceptors.response.use(
   (response) => response,
   (error) => {

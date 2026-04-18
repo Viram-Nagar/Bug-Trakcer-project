@@ -9,7 +9,6 @@ import authMiddleware from "../middleware/authMiddleware.js";
 
 const router = express.Router();
 
-// All routes protected
 router.use(authMiddleware);
 
 router.post("/", addComment);

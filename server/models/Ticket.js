@@ -17,60 +17,51 @@ const ticketSchema = new mongoose.Schema(
       default: "",
     },
 
-    // Which project this ticket belongs to
     project: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Project",
       required: [true, "Project is required"],
     },
 
-    // Who reported/created the ticket
     reporter: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
       required: true,
     },
 
-    // Who is assigned to fix it
     assignee: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
       default: null,
     },
 
-    // Ticket type
     type: {
       type: String,
       enum: ["bug", "feature", "improvement", "task"],
       default: "bug",
     },
 
-    // Priority level
     priority: {
       type: String,
       enum: ["low", "medium", "high", "critical"],
       default: "medium",
     },
 
-    // Kanban status
     status: {
       type: String,
       enum: ["todo", "in-progress", "in-review", "done"],
       default: "todo",
     },
 
-    // Optional due date
     dueDate: {
       type: Date,
       default: null,
     },
 
-    // Ticket number within project e.g. BUG-1, BUG-2
     ticketNumber: {
       type: Number,
     },
 
-    // Tags for filtering
     tags: [
       {
         type: String,
@@ -83,8 +74,6 @@ const ticketSchema = new mongoose.Schema(
   },
 );
 
-// Auto-increment ticketNumber per project
-// Before saving, find highest ticketNumber in same project
 ticketSchema.pre("save", async function () {
   if (this.isNew) {
     const lastTicket = await mongoose
@@ -96,7 +85,6 @@ ticketSchema.pre("save", async function () {
   }
 });
 
-// Index for faster queries
 ticketSchema.index({ project: 1, status: 1 });
 ticketSchema.index({ project: 1, assignee: 1 });
 ticketSchema.index({ project: 1, priority: 1 });

@@ -12,8 +12,6 @@ function Breadcrumbs() {
 
   const project = projects.find((p) => p._id === (id || projectId));
   const ticket = tickets.find((t) => t._id === ticketId);
-
-  // Build breadcrumb items based on current route
   const buildCrumbs = () => {
     const path = location.pathname;
     const crumbs = [

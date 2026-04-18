@@ -14,7 +14,6 @@ function ConfirmModal({
     <AnimatePresence>
       {isOpen && (
         <>
-          {/* Backdrop */}
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -23,7 +22,6 @@ function ConfirmModal({
             className="fixed inset-0 bg-black/40 backdrop-blur-sm z-40"
           />
 
-          {/* Modal */}
           <motion.div
             initial={{ opacity: 0, scale: 0.95, y: 20 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
@@ -44,7 +42,6 @@ function ConfirmModal({
                 <AlertTriangle className="w-7 h-7 text-red-500" />
               </div>
 
-              {/* Text */}
               <h3 className="text-lg font-bold text-gray-900 text-center mb-2">
                 {title}
               </h3>
@@ -52,7 +49,6 @@ function ConfirmModal({
                 {message}
               </p>
 
-              {/* Buttons */}
               <div className="flex gap-3">
                 <button
                   onClick={onClose}

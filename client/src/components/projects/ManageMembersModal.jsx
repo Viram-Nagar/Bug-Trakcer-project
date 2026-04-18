@@ -17,7 +17,6 @@ import toast from "react-hot-toast";
 import { addMember, removeMember } from "../../features/projects/projectSlice";
 import { selectUser } from "../../features/auth/authSlice";
 
-// ── Role Config ───────────────────────────────────────
 const ROLE_CONFIG = {
   admin: {
     label: "Admin",
@@ -45,7 +44,6 @@ const ROLE_CONFIG = {
   },
 };
 
-// ── Role Badge ────────────────────────────────────────
 function RoleBadge({ role }) {
   const config = ROLE_CONFIG[role] || ROLE_CONFIG.viewer;
   const Icon = config.icon;
@@ -61,7 +59,6 @@ function RoleBadge({ role }) {
   );
 }
 
-// ── Main Component ────────────────────────────────────
 function ManageMembersModal({ isOpen, onClose, project }) {
   const dispatch = useDispatch();
   const currentUser = useSelector(selectUser);
@@ -76,7 +73,6 @@ function ManageMembersModal({ isOpen, onClose, project }) {
     project?.owner?._id === currentUser?._id ||
     project?.owner === currentUser?._id;
 
-  // ── Add Member ─────────────────────────────────────
   const handleAddMember = async (e) => {
     e.preventDefault();
 
@@ -110,10 +106,8 @@ function ManageMembersModal({ isOpen, onClose, project }) {
     }
   };
 
-  // ── Remove Member ──────────────────────────────────
   const handleRemoveMember = async (userId, memberName) => {
     if (!window.confirm) {
-      // Use our custom approach
     }
     setRemovingId(userId);
 
@@ -181,9 +175,7 @@ function ManageMembersModal({ isOpen, onClose, project }) {
                 </button>
               </div>
 
-              {/* Scrollable Content */}
               <div className="flex-1 overflow-y-auto">
-                {/* Add Member Form — owner only */}
                 {isOwner && (
                   <div className="p-6 border-b border-gray-100">
                     <h3
@@ -363,8 +355,6 @@ function ManageMembersModal({ isOpen, onClose, project }) {
                           {/* Role Badge */}
                           <RoleBadge role={member.role} />
 
-                          {/* Remove Button — owner only,
-                              cannot remove self or owner */}
                           {isOwner && !isMemberOwner && !isCurrentUser && (
                             <motion.button
                               whileHover={{ scale: 1.05 }}

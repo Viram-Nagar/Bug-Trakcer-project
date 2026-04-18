@@ -25,12 +25,10 @@ function ProjectsPage() {
   const [search, setSearch] = useState("");
   const [filter, setFilter] = useState("all");
 
-  // Fetch projects on mount
   useEffect(() => {
     dispatch(fetchProjects());
   }, [dispatch]);
 
-  // Show error toast
   useEffect(() => {
     if (error) {
       toast.error(error);
@@ -38,7 +36,6 @@ function ProjectsPage() {
     }
   }, [error, dispatch]);
 
-  // Filter + Search
   const filteredProjects = projects.filter((p) => {
     const matchSearch =
       p.title.toLowerCase().includes(search.toLowerCase()) ||
@@ -119,7 +116,6 @@ function ProjectsPage() {
 
         {/* Content */}
         {isLoading ? (
-          // Loading State
           <div
             className="grid grid-cols-1 sm:grid-cols-2
                   lg:grid-cols-3 gap-5"
@@ -129,7 +125,6 @@ function ProjectsPage() {
             ))}
           </div>
         ) : filteredProjects.length === 0 ? (
-          // Empty State
           <EmptyState
             emoji="📁"
             title="No projects yet"
@@ -146,7 +141,6 @@ function ProjectsPage() {
             }
           />
         ) : (
-          // Projects Grid
           <motion.div
             layout
             className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5"

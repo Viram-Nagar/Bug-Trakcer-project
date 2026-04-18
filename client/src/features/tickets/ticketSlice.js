@@ -1,8 +1,6 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import ticketService from "../../services/ticketService.js";
 
-// ─── THUNKS ───────────────────────────────────────────
-
 export const fetchTickets = createAsyncThunk(
   "tickets/fetchByProject",
   async ({ projectId, filters }, thunkAPI) => {
@@ -73,15 +71,12 @@ export const updateTicketStatus = createAsyncThunk(
   },
 );
 
-// ─── INITIAL STATE ────────────────────────────────────
-
 const initialState = {
   tickets: [],
   currentTicket: null,
   isLoading: false,
   error: null,
 
-  // Active filters — synced with UI
   filters: {
     status: "",
     priority: "",
@@ -93,8 +88,6 @@ const initialState = {
   },
 };
 
-// ─── SLICE ────────────────────────────────────────────
-
 const ticketSlice = createSlice({
   name: "tickets",
   initialState,
@@ -104,7 +97,6 @@ const ticketSlice = createSlice({
       state.currentTicket = action.payload;
     },
 
-    // Update filters in Redux — triggers re-fetch in component
     setFilters: (state, action) => {
       state.filters = { ...state.filters, ...action.payload };
     },
@@ -125,7 +117,6 @@ const ticketSlice = createSlice({
       state.error = null;
     },
 
-    // Clear tickets when switching projects
     clearTickets: (state) => {
       state.tickets = [];
       state.currentTicket = null;
@@ -135,7 +126,6 @@ const ticketSlice = createSlice({
   extraReducers: (builder) => {
     builder
 
-      // ── Fetch Tickets ──────────────────────
       .addCase(fetchTickets.pending, (state) => {
         state.isLoading = true;
         state.error = null;
@@ -149,14 +139,13 @@ const ticketSlice = createSlice({
         state.error = action.payload;
       })
 
-      // ── Create Ticket ──────────────────────
       .addCase(createTicket.pending, (state) => {
         state.isLoading = true;
         state.error = null;
       })
       .addCase(createTicket.fulfilled, (state, action) => {
         state.isLoading = false;
-        // Add to beginning of list
+
         state.tickets.unshift(action.payload.data.ticket);
       })
       .addCase(createTicket.rejected, (state, action) => {
@@ -164,7 +153,6 @@ const ticketSlice = createSlice({
         state.error = action.payload;
       })
 
-      // ── Update Ticket ──────────────────────
       .addCase(updateTicket.fulfilled, (state, action) => {
         const updated = action.payload.data.ticket;
         const index = state.tickets.findIndex((t) => t._id === updated._id);
@@ -174,7 +162,6 @@ const ticketSlice = createSlice({
         }
       })
 
-      // ── Delete Ticket ──────────────────────
       .addCase(deleteTicket.fulfilled, (state, action) => {
         state.tickets = state.tickets.filter((t) => t._id !== action.payload);
         if (state.currentTicket?._id === action.payload) {
@@ -182,7 +169,6 @@ const ticketSlice = createSlice({
         }
       })
 
-      // ── Update Status ──────────────────────
       .addCase(updateTicketStatus.fulfilled, (state, action) => {
         const updated = action.payload.data.ticket;
         const index = state.tickets.findIndex((t) => t._id === updated._id);
@@ -199,7 +185,6 @@ export const {
   clearTickets,
 } = ticketSlice.actions;
 
-// ─── SELECTORS ────────────────────────────────────────
 export const selectTickets = (state) => state.tickets.tickets;
 export const selectCurrentTicket = (state) => state.tickets.currentTicket;
 export const selectTicketLoading = (state) => state.tickets.isLoading;

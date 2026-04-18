@@ -23,13 +23,12 @@ function CreateTicketModal({
     description: "",
     type: "bug",
     priority: "medium",
-    status: defaultStatus, // ← use prop directly here
+    status: defaultStatus,
     assigneeId: "",
     dueDate: "",
     tags: [],
   });
 
-  // ✅ AND reset form properly when modal opens/closes
   useEffect(() => {
     if (isOpen) {
       setFormData({
@@ -37,23 +36,20 @@ function CreateTicketModal({
         description: "",
         type: "bug",
         priority: "medium",
-        status: defaultStatus, // ← fresh status when modal opens
+        status: defaultStatus,
         assigneeId: "",
         dueDate: "",
         tags: [],
       });
-      // setTagInput("");
     }
   }, [isOpen, defaultStatus]);
 
-  // Tag input state
   const [tagInput, setTagInput] = useState("");
 
   const handleChange = (e) => {
     setFormData((p) => ({ ...p, [e.target.name]: e.target.value }));
   };
 
-  // Add tag on Enter or comma
   const handleTagKeyDown = (e) => {
     if ((e.key === "Enter" || e.key === ",") && tagInput.trim()) {
       e.preventDefault();
@@ -95,7 +91,6 @@ function CreateTicketModal({
 
     if (createTicket.fulfilled.match(result)) {
       toast.success("Ticket created! 🎫");
-      // Reset form
       setFormData({
         title: "",
         description: "",
@@ -111,8 +106,6 @@ function CreateTicketModal({
       toast.error(result.payload || "Failed to create ticket");
     }
   };
-
-  // ── UI Helpers ─────────────────────────────────────
 
   const typeOptions = [
     { value: "bug", label: "🐛 Bug" },

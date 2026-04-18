@@ -4,17 +4,6 @@ import { useDispatch, useSelector } from "react-redux";
 import { KanbanBoardSkeleton } from "../components/common/Skeleton";
 import PageTransition from "../components/common/PageTransition";
 
-/*
-  dnd-kit imports explained:
-  
-  DndContext        → wraps entire drag-drop area, handles all events
-  DragOverlay       → renders a floating preview of dragged item
-  PointerSensor     → detects mouse/touch drag (with activation distance)
-  KeyboardSensor    → allows keyboard drag-drop for accessibility
-  useSensor(s)      → creates sensor instances
-  closestCorners    → collision detection algorithm
-                      (finds closest column corner to dropped item)
-*/
 import {
   DndContext,
   DragOverlay,
@@ -47,7 +36,6 @@ import KanbanColumn from "../components/kanban/KanbanColumn";
 import KanbanCard from "../components/kanban/KanbanCard";
 import CreateTicketModal from "../components/tickets/CreateTicketModal";
 
-// ── Column Definitions ────────────────────────────────
 const COLUMNS = [
   {
     id: "todo",
@@ -91,8 +79,6 @@ const COLUMNS = [
   },
 ];
 
-// ── Main Component ────────────────────────────────────
-
 function KanbanPage() {
   const { projectId } = useParams();
   const navigate = useNavigate();
@@ -105,16 +91,12 @@ function KanbanPage() {
 
   const project = projects.find((p) => p._id === projectId);
 
-  // Which ticket is currently being dragged
   const [activeTicket, setActiveTicket] = useState(null);
 
-  // Create modal state + which column to pre-select
   const [createModal, setCreateModal] = useState({
     open: false,
     defaultStatus: "todo",
   });
-
-  // ── Fetch Data ────────────────────────────────────
 
   useEffect(() => {
     if (projects.length === 0) dispatch(fetchProjects());
@@ -136,14 +118,6 @@ function KanbanPage() {
     }
   }, [error, dispatch]);
 
-  // ── DnD Sensors ──────────────────────────────────
-  /*
-    PointerSensor with activationConstraint:
-    distance: 8 → user must drag at least 8px before drag starts.
-    This prevents accidental drags when clicking cards.
-    
-    Without this, clicking a card would immediately start dragging!
-  */
   const sensors = useSensors(
     useSensor(PointerSensor, {
       activationConstraint: { distance: 8 },
@@ -153,89 +127,46 @@ function KanbanPage() {
     }),
   );
 
-  // ── Group tickets by status ───────────────────────
-
   const getColumnTickets = useCallback(
     (columnId) => tickets.filter((t) => t.status === columnId),
     [tickets],
   );
 
-  // ── DnD Event Handlers ────────────────────────────
-
   const handleDragStart = (event) => {
-    /*
-      event.active.data.current contains data we set in useSortable
-      { type: "ticket", ticket: {...} }
-    */
     const { data } = event.active;
     if (data.current?.type === "ticket") {
       setActiveTicket(data.current.ticket);
     }
   };
 
-  const handleDragOver = (event) => {
-    /*
-      This fires continuously while dragging.
-      We don't need to do anything here for column-to-column
-      because we handle it in handleDragEnd.
-    */
-  };
-
   const handleDragEnd = async (event) => {
     const { active, over } = event;
 
-    // Reset active ticket
     setActiveTicket(null);
 
-    // If dropped outside any droppable area
     if (!over) return;
 
     const activeId = active.id;
     const overId = over.id;
 
-    // If dropped in same position — do nothing
     if (activeId === overId) return;
 
-    /*
-      Determine the target column.
-      
-      Case 1: Dropped directly onto a COLUMN
-        → over.id = column id (e.g. "in-progress")
-        → over.data.current.type = "column"
-      
-      Case 2: Dropped onto another TICKET in a column
-        → over.id = ticket._id
-        → over.data.current.type = "ticket"
-        → we get the column from the ticket's status
-    */
     let targetColumnId;
 
     if (over.data.current?.type === "column") {
       targetColumnId = over.id;
     } else if (over.data.current?.type === "ticket") {
-      // Find the ticket being dropped on → get its column
       const overTicket = tickets.find((t) => t._id === overId);
       targetColumnId = overTicket?.status;
     }
 
     if (!targetColumnId) return;
 
-    // Find the dragged ticket
     const draggedTicket = tickets.find((t) => t._id === activeId);
     if (!draggedTicket) return;
 
-    // If status hasn't changed — do nothing
     if (draggedTicket.status === targetColumnId) return;
 
-    /*
-      Optimistic update pattern:
-      1. Update Redux state immediately (feels instant)
-      2. Call API in background
-      3. If API fails → show error (Redux already reverted? No — 
-         we keep it optimistic and show error only)
-      
-      This makes the UI feel responsive even on slow connections.
-    */
     const result = await dispatch(
       updateTicketStatus({
         id: activeId,
@@ -253,13 +184,9 @@ function KanbanPage() {
     }
   };
 
-  // ── Open create modal with pre-selected status ────
-
   const handleAddTicket = (columnId) => {
     setCreateModal({ open: true, defaultStatus: columnId });
   };
-
-  // ─────────────────────────────────────────────────
 
   return (
     <PageTransition>
@@ -327,15 +254,6 @@ function KanbanPage() {
         {isLoading ? (
           <KanbanBoardSkeleton />
         ) : (
-          /*
-          DndContext — the root context for all drag-drop.
-          
-          sensors        → how drag is initiated (mouse/touch/keyboard)
-          collisionDetection → algorithm to find drop target
-          onDragStart    → fires when drag begins
-          onDragOver     → fires when dragging over something
-          onDragEnd      → fires when drag is released
-        */
           <DndContext
             sensors={sensors}
             collisionDetection={closestCorners}
@@ -359,15 +277,6 @@ function KanbanPage() {
               ))}
             </div>
 
-            {/*
-            DragOverlay — renders the card that "floats"
-            under the cursor while dragging.
-            
-            Without this, the original card just disappears
-            during drag. With overlay, you see a floating copy.
-            
-            dropAnimation → smooth animation when card is dropped.
-          */}
             <DragOverlay
               dropAnimation={{
                 duration: 200,

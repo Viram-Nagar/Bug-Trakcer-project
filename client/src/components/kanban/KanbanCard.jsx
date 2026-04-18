@@ -10,7 +10,6 @@ import {
   GripVertical,
 } from "lucide-react";
 
-// ── Priority Config ───────────────────────────────────
 const PRIORITY_CONFIG = {
   critical: {
     label: "Critical",
@@ -45,17 +44,6 @@ function KanbanCard({ ticket, isOverlay = false }) {
   const navigate = useNavigate();
   const { projectId } = useParams();
 
-  /*
-    useSortable — makes this card draggable within + across columns
-    id must be unique — we use ticket._id
-    
-    attributes → aria attributes for accessibility
-    listeners  → mouse/touch event handlers for drag
-    setNodeRef → ref to attach to the DOM element
-    transform  → current drag position (x, y)
-    transition → smooth animation when dropped
-    isDragging → true while being dragged
-  */
   const {
     attributes,
     listeners,
@@ -78,7 +66,6 @@ function KanbanCard({ ticket, isOverlay = false }) {
 
   const priority = PRIORITY_CONFIG[ticket.priority] || PRIORITY_CONFIG.medium;
 
-  // While dragging — show ghost placeholder
   if (isDragging) {
     return (
       <div
@@ -103,7 +90,6 @@ function KanbanCard({ ticket, isOverlay = false }) {
                      : ""
                  }`}
     >
-      {/* Top Row — drag handle + type + number */}
       <div className="flex items-center justify-between mb-2.5">
         <div className="flex items-center gap-2">
           <span className="text-sm">{TYPE_EMOJI[ticket.type] || "📋"}</span>
@@ -112,11 +98,6 @@ function KanbanCard({ ticket, isOverlay = false }) {
           </span>
         </div>
 
-        {/*
-          Drag Handle — only this area triggers drag.
-          This prevents accidental drags when clicking card.
-          {...listeners} and {...attributes} go on the handle only.
-        */}
         <div
           {...attributes}
           {...listeners}
@@ -129,7 +110,6 @@ function KanbanCard({ ticket, isOverlay = false }) {
         </div>
       </div>
 
-      {/* Title — clickable to open detail page */}
       <h4
         onClick={() => navigate(`/projects/${projectId}/tickets/${ticket._id}`)}
         className="text-sm font-semibold text-gray-900 line-clamp-2
@@ -138,8 +118,6 @@ function KanbanCard({ ticket, isOverlay = false }) {
       >
         {ticket.title}
       </h4>
-
-      {/* Priority Badge */}
       <div className="mb-3">
         <span
           className={`inline-flex items-center gap-1 text-xs
@@ -151,7 +129,6 @@ function KanbanCard({ ticket, isOverlay = false }) {
         </span>
       </div>
 
-      {/* Footer — assignee + due date */}
       <div
         className="flex items-center justify-between pt-2.5
                       border-t border-gray-50"

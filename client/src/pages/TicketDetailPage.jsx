@@ -41,8 +41,6 @@ import PageTransition from "../components/common/PageTransition";
 import ConfirmModal from "../components/common/ConfirmModal";
 import CommentSection from "../components/comments/CommentSection";
 
-// ─── Config ───────────────────────────────────────────
-
 const PRIORITY_CONFIG = {
   critical: {
     label: "Critical",
@@ -116,8 +114,6 @@ const TYPE_CONFIG = {
   },
 };
 
-// ─── Component ────────────────────────────────────────
-
 function TicketDetailPage() {
   const { projectId, ticketId } = useParams();
   const navigate = useNavigate();
@@ -135,7 +131,6 @@ function TicketDetailPage() {
   const ticket = tickets.find((t) => t._id === ticketId);
   const project = projects.find((p) => p._id === projectId);
 
-  // Fetch data if not in store yet
   useEffect(() => {
     dispatch(fetchProjects());
   }, [dispatch, projects.length]);
@@ -143,8 +138,6 @@ function TicketDetailPage() {
   useEffect(() => {
     dispatch(fetchTickets({ projectId, filters: {} }));
   }, [dispatch, tickets.length, projectId]);
-
-  // ── Handlers ───────────────────────────────────────
 
   const handleStatusChange = async (newStatus) => {
     setShowStatusMenu(false);
@@ -192,14 +185,6 @@ function TicketDetailPage() {
   const priority = PRIORITY_CONFIG[ticket?.priority] || PRIORITY_CONFIG.medium;
   const status = STATUS_CONFIG[ticket?.status] || STATUS_CONFIG.todo;
   const type = TYPE_CONFIG[ticket?.type] || TYPE_CONFIG.task;
-
-  // const isReporter =
-  //   ticket.reporter?._id === currentUser?._id ||
-  //   ticket.reporter === currentUser?._id;
-  // const isOwner =
-  //   project?.owner?._id === currentUser?._id ||
-  //   project?.owner === currentUser?._id;
-  // const canEdit = isReporter || isOwner;
 
   const userCanEdit = canEditTicket(project, ticket, currentUser?._id);
   const userCanDelete = canDeleteTicket(project, ticket, currentUser?._id);
@@ -422,52 +407,6 @@ function TicketDetailPage() {
 
           {/* ── RIGHT: Sidebar Details ─────────────── */}
           <div className="space-y-4">
-            {/* Actions Card */}
-            {/* {canEdit && (
-              <motion.div
-                initial={{ opacity: 0, x: 20 }}
-                animate={{ opacity: 1, x: 0 }}
-                className="bg-white rounded-2xl border border-gray-100
-                           p-4 shadow-sm"
-              >
-                <h3
-                  className="text-xs font-semibold text-gray-400
-                               uppercase tracking-wider mb-3"
-                >
-                  Actions
-                </h3>
-                <div className="flex flex-col gap-2">
-                  <motion.button
-                    whileHover={{ scale: 1.01 }}
-                    whileTap={{ scale: 0.99 }}
-                    onClick={() => setShowEditModal(true)}
-                    className="flex items-center gap-2 w-full px-4 py-2.5
-                               rounded-xl border border-gray-200 text-gray-700
-                               hover:bg-blue-50 hover:text-blue-600
-                               hover:border-blue-200 transition-all text-sm
-                               font-medium"
-                  >
-                    <Pencil className="w-4 h-4" />
-                    Edit Ticket
-                  </motion.button>
-
-                  <motion.button
-                    whileHover={{ scale: 1.01 }}
-                    whileTap={{ scale: 0.99 }}
-                    onClick={() => setShowDeleteModal(true)}
-                    className="flex items-center gap-2 w-full px-4 py-2.5
-                               rounded-xl border border-gray-200 text-gray-700
-                               hover:bg-red-50 hover:text-red-600
-                               hover:border-red-200 transition-all text-sm
-                               font-medium"
-                  >
-                    <Trash2 className="w-4 h-4" />
-                    Delete Ticket
-                  </motion.button>
-                </div>
-              </motion.div>
-            )} */}
-
             {(userCanEdit || userCanDelete) && (
               <motion.div
                 initial={{ opacity: 0, x: 20 }}

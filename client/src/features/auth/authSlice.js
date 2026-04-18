@@ -27,14 +27,13 @@ export const loginUser = createAsyncThunk(
   },
 );
 
-// ✅ Safe version
 const getUserFromStorage = () => {
   try {
     const user = localStorage.getItem("user");
     if (!user || user === "undefined" || user === "null") return null;
     return JSON.parse(user);
   } catch {
-    localStorage.removeItem("user"); // auto clean bad data
+    localStorage.removeItem("user");
     return null;
   }
 };
@@ -46,16 +45,6 @@ const initialState = {
   isAuthenticated: !!getUserFromStorage(),
   error: null,
 };
-
-// const initialState = {
-//   user: localStorage.getItem("user")
-//     ? JSON.parse(localStorage.getItem("user"))
-//     : null,
-//   token: localStorage.getItem("token") || null,
-//   isLoading: false,
-//   isAuthenticated: !!localStorage.getItem("token"),
-//   error: null,
-// };
 
 const authSlice = createSlice({
   name: "auth",
@@ -84,7 +73,7 @@ const authSlice = createSlice({
         state.error = null;
       })
       .addCase(registerUser.fulfilled, (state, action) => {
-        const { user, token } = action.payload.data; // ✅ destructure cleanly
+        const { user, token } = action.payload.data;
 
         state.isLoading = false;
         state.isAuthenticated = true;
@@ -105,7 +94,7 @@ const authSlice = createSlice({
         state.error = null;
       })
       .addCase(loginUser.fulfilled, (state, action) => {
-        const { user, token } = action.payload.data; // ✅ destructure cleanly
+        const { user, token } = action.payload.data;
 
         state.isLoading = false;
         state.isAuthenticated = true;

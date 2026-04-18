@@ -36,7 +36,6 @@ import TicketCard from "../components/tickets/TicketCard";
 import CreateTicketModal from "../components/tickets/CreateTicketModal";
 import PageTransition from "../components/common/PageTransition";
 
-// ── Priority sort weight ──────────────────────────────
 const PRIORITY_WEIGHT = {
   critical: 4,
   high: 3,
@@ -44,7 +43,6 @@ const PRIORITY_WEIGHT = {
   low: 1,
 };
 
-// ── Filter Chip ───────────────────────────────────────
 function FilterChip({ label, value, onRemove }) {
   return (
     <motion.span
@@ -67,7 +65,6 @@ function FilterChip({ label, value, onRemove }) {
   );
 }
 
-// ── Sort Button ───────────────────────────────────────
 function SortButton({ label, field, currentSortBy, currentOrder, onSort }) {
   const isActive = currentSortBy === field;
 
@@ -96,7 +93,6 @@ function SortButton({ label, field, currentSortBy, currentOrder, onSort }) {
   );
 }
 
-// ── Main Component ────────────────────────────────────
 function TicketsPage() {
   const { projectId } = useParams();
   const dispatch = useDispatch();
@@ -115,8 +111,6 @@ function TicketsPage() {
   const [searchInput, setSearchInput] = useState("");
   const [showFilters, setShowFilters] = useState(false);
 
-  // ── Data Fetching ─────────────────────────────────
-
   useEffect(() => {
     if (projects.length === 0) dispatch(fetchProjects());
   }, [dispatch, projects.length]);
@@ -134,7 +128,6 @@ function TicketsPage() {
     }
   }, [error, dispatch]);
 
-  // Clear on unmount
   useEffect(() => {
     return () => {
       dispatch(clearTickets());
@@ -142,16 +135,12 @@ function TicketsPage() {
     };
   }, [dispatch]);
 
-  // ── Debounced Search ─────────────────────────────
-
   useEffect(() => {
     const timer = setTimeout(() => {
       dispatch(setFilters({ search: searchInput }));
     }, 500);
     return () => clearTimeout(timer);
   }, [searchInput, dispatch]);
-
-  // ── Handlers ─────────────────────────────────────
 
   const handleFilterChange = (key, value) => {
     dispatch(setFilters({ [key]: value }));
@@ -164,7 +153,6 @@ function TicketsPage() {
 
   const handleSort = (field) => {
     if (filters.sortBy === field) {
-      // Toggle order if same field
       dispatch(
         setFilters({
           order: filters.order === "desc" ? "asc" : "desc",
@@ -175,16 +163,14 @@ function TicketsPage() {
     }
   };
 
-  // ── Priority sort on frontend ─────────────────────
   const sortedTickets = [...tickets].sort((a, b) => {
     if (filters.sortBy === "priority") {
       const diff = PRIORITY_WEIGHT[b.priority] - PRIORITY_WEIGHT[a.priority];
       return filters.order === "desc" ? diff : -diff;
     }
-    return 0; // backend handles other sorts
+    return 0;
   });
 
-  // ── Active filter chips data ──────────────────────
   const activeFilters = [
     filters.status && {
       key: "status",
@@ -219,7 +205,6 @@ function TicketsPage() {
 
   const hasActiveFilters = activeFilters.length > 0;
 
-  // ── Stats ─────────────────────────────────────────
   const stats = {
     total: tickets.length,
     todo: tickets.filter((t) => t.status === "todo").length,
@@ -668,725 +653,3 @@ function TicketsPage() {
 }
 
 export default TicketsPage;
-
-// import { useEffect, useState } from "react";
-// import { useParams, useNavigate } from "react-router-dom";
-// import { useDispatch, useSelector } from "react-redux";
-// import { motion, AnimatePresence } from "framer-motion";
-// import {
-//   Plus,
-//   Search,
-//   X,
-//   Ticket,
-//   Loader2,
-//   ArrowLeft,
-//   LayoutGrid,
-// } from "lucide-react";
-// import toast from "react-hot-toast";
-// import {
-//   fetchTickets,
-//   selectTickets,
-//   selectTicketLoading,
-//   selectTicketError,
-//   selectTicketFilters,
-//   setFilters,
-//   clearFilters,
-//   clearTicketError,
-//   clearTickets,
-// } from "../features/tickets/ticketSlice";
-// import {
-//   selectProjects,
-//   fetchProjects,
-// } from "../features/projects/projectSlice";
-// import TicketCard from "../components/tickets/TicketCard";
-// import CreateTicketModal from "../components/tickets/CreateTicketModal";
-
-// function TicketsPage() {
-//   const { projectId } = useParams();
-//   const dispatch = useDispatch();
-//   const navigate = useNavigate();
-
-//   const tickets = useSelector(selectTickets);
-//   const isLoading = useSelector(selectTicketLoading);
-//   const error = useSelector(selectTicketError);
-//   const filters = useSelector(selectTicketFilters);
-//   const projects = useSelector(selectProjects);
-
-//   const project = projects.find((p) => p._id === projectId);
-
-//   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
-//   const [searchInput, setSearchInput] = useState("");
-
-//   // Fetch projects if not loaded yet
-//   useEffect(() => {
-//     if (projects.length === 0) {
-//       dispatch(fetchProjects());
-//     }
-//   }, [dispatch, projects.length]);
-
-//   // Fetch tickets when projectId or filters change
-//   useEffect(() => {
-//     if (projectId) {
-//       dispatch(fetchTickets({ projectId, filters }));
-//     }
-//   }, [dispatch, projectId, filters]);
-
-//   // Show error toast
-//   useEffect(() => {
-//     if (error) {
-//       toast.error(error);
-//       dispatch(clearTicketError());
-//     }
-//   }, [error, dispatch]);
-
-//   // Debounce search
-//   useEffect(() => {
-//     const timer = setTimeout(() => {
-//       dispatch(setFilters({ search: searchInput }));
-//     }, 500);
-//     return () => clearTimeout(timer);
-//   }, [searchInput, dispatch]);
-
-//   useEffect(() => {
-//     return () => {
-//       dispatch(clearTickets()); // clear on unmount
-//       dispatch(clearFilters()); // clear filters too
-//     };
-//   }, [dispatch]);
-
-//   const handleFilterChange = (key, value) => {
-//     dispatch(setFilters({ [key]: value }));
-//   };
-
-//   const handleClearFilters = () => {
-//     dispatch(clearFilters());
-//     setSearchInput("");
-//   };
-
-//   const hasActiveFilters =
-//     filters.status || filters.priority || filters.type || filters.search;
-
-//   const stats = {
-//     total: tickets.length,
-//     todo: tickets.filter((t) => t.status === "todo").length,
-//     inProgress: tickets.filter((t) => t.status === "in-progress").length,
-//     done: tickets.filter((t) => t.status === "done").length,
-//   };
-
-//   return (
-//     <>
-//       <div className="p-6 max-w-7xl mx-auto">
-//         {/* ── Back Button ────────────────────────── */}
-//         <motion.button
-//           initial={{ opacity: 0, x: -10 }}
-//           animate={{ opacity: 1, x: 0 }}
-//           onClick={() => navigate(`/projects/${projectId}`)}
-//           className="flex items-center gap-2 text-gray-500
-//                      hover:text-gray-900 mb-6 transition-colors group"
-//         >
-//           <ArrowLeft
-//             className="w-4 h-4 group-hover:-translate-x-1
-//                                 transition-transform duration-200"
-//           />
-//           <span className="text-sm font-medium">
-//             Back to {project?.title || "Project"}
-//           </span>
-//         </motion.button>
-
-//         {/* ── Page Header ─────────────────────────── */}
-//         <motion.div
-//           initial={{ opacity: 0, y: -20 }}
-//           animate={{ opacity: 1, y: 0 }}
-//           className="flex items-start justify-between mb-6"
-//         >
-//           <div>
-//             <div className="flex items-center gap-2 mb-1">
-//               <span className="text-2xl">{project?.icon || "🎫"}</span>
-//               <h1 className="text-2xl font-bold text-gray-900">
-//                 {project?.title || "Tickets"}
-//               </h1>
-//             </div>
-//             <p className="text-gray-500 text-sm">Manage and track all issues</p>
-//           </div>
-
-//           <div className="flex items-center gap-2">
-//             <button
-//               onClick={() => navigate(`/projects/${projectId}/kanban`)}
-//               className="flex items-center gap-2 px-4 py-2.5 rounded-xl
-//                border border-gray-200 text-gray-600
-//                hover:bg-purple-50 hover:text-purple-600
-//                hover:border-purple-200 transition-all
-//                text-sm font-medium"
-//             >
-//               <LayoutGrid className="w-4 h-4" />
-//               <span className="hidden sm:inline">Board View</span>
-//             </button>
-
-//             <motion.button
-//               whileHover={{ scale: 1.02 }}
-//               whileTap={{ scale: 0.98 }}
-//               onClick={() => setIsCreateModalOpen(true)}
-//               className="btn-primary flex items-center gap-2 px-5 py-2.5"
-//             >
-//               <Plus className="w-4 h-4" />
-//               <span className="hidden sm:inline">New Ticket</span>
-//               <span className="sm:hidden">New</span>
-//             </motion.button>
-//           </div>
-
-//           {/* <motion.button
-//             whileHover={{ scale: 1.02 }}
-//             whileTap={{ scale: 0.98 }}
-//             onClick={() => setIsCreateModalOpen(true)}
-//             className="btn-primary flex items-center gap-2 px-5 py-2.5"
-//           >
-//             <Plus className="w-4 h-4" />
-//             New Ticket
-//           </motion.button> */}
-//         </motion.div>
-
-//         {/* ── Stats Bar ───────────────────────────── */}
-//         <motion.div
-//           initial={{ opacity: 0, y: -10 }}
-//           animate={{ opacity: 1, y: 0 }}
-//           transition={{ delay: 0.05 }}
-//           className="grid grid-cols-4 gap-4 mb-6"
-//         >
-//           {[
-//             {
-//               label: "Total",
-//               value: stats.total,
-//               color: "text-gray-700",
-//               bg: "bg-gray-50",
-//             },
-//             {
-//               label: "To Do",
-//               value: stats.todo,
-//               color: "text-gray-600",
-//               bg: "bg-gray-100",
-//             },
-//             {
-//               label: "In Progress",
-//               value: stats.inProgress,
-//               color: "text-blue-600",
-//               bg: "bg-blue-50",
-//             },
-//             {
-//               label: "Done",
-//               value: stats.done,
-//               color: "text-emerald-600",
-//               bg: "bg-emerald-50",
-//             },
-//           ].map((stat) => (
-//             <div
-//               key={stat.label}
-//               className={`${stat.bg} rounded-xl p-4 text-center`}
-//             >
-//               <p className={`text-2xl font-bold ${stat.color}`}>{stat.value}</p>
-//               <p className="text-xs text-gray-500 mt-0.5">{stat.label}</p>
-//             </div>
-//           ))}
-//         </motion.div>
-
-//         {/* ── Search + Filters ────────────────────── */}
-//         <motion.div
-//           initial={{ opacity: 0 }}
-//           animate={{ opacity: 1 }}
-//           transition={{ delay: 0.1 }}
-//           className="bg-white rounded-xl border border-gray-100
-//                      p-4 mb-6 shadow-sm"
-//         >
-//           <div className="flex flex-wrap gap-3">
-//             {/* Search */}
-//             <div className="relative flex-1 min-w-[200px]">
-//               <Search
-//                 className="absolute left-3 top-1/2 -translate-y-1/2
-//                                  w-4 h-4 text-gray-400"
-//               />
-//               <input
-//                 type="text"
-//                 placeholder="Search tickets..."
-//                 value={searchInput}
-//                 onChange={(e) => setSearchInput(e.target.value)}
-//                 className="input-field pl-10 py-2"
-//               />
-//             </div>
-
-//             {/* Status */}
-//             <select
-//               value={filters.status}
-//               onChange={(e) => handleFilterChange("status", e.target.value)}
-//               className="input-field w-auto py-2"
-//             >
-//               <option value="">All Status</option>
-//               <option value="todo">To Do</option>
-//               <option value="in-progress">In Progress</option>
-//               <option value="in-review">In Review</option>
-//               <option value="done">Done</option>
-//             </select>
-
-//             {/* Priority */}
-//             <select
-//               value={filters.priority}
-//               onChange={(e) => handleFilterChange("priority", e.target.value)}
-//               className="input-field w-auto py-2"
-//             >
-//               <option value="">All Priority</option>
-//               <option value="low">🟢 Low</option>
-//               <option value="medium">🟡 Medium</option>
-//               <option value="high">🟠 High</option>
-//               <option value="critical">🔴 Critical</option>
-//             </select>
-
-//             {/* Type */}
-//             <select
-//               value={filters.type}
-//               onChange={(e) => handleFilterChange("type", e.target.value)}
-//               className="input-field w-auto py-2"
-//             >
-//               <option value="">All Types</option>
-//               <option value="bug">🐛 Bug</option>
-//               <option value="feature">✨ Feature</option>
-//               <option value="improvement">⚡ Improvement</option>
-//               <option value="task">📋 Task</option>
-//             </select>
-
-//             {/* Clear */}
-//             {hasActiveFilters && (
-//               <motion.button
-//                 initial={{ opacity: 0, scale: 0.9 }}
-//                 animate={{ opacity: 1, scale: 1 }}
-//                 onClick={handleClearFilters}
-//                 className="flex items-center gap-1.5 px-3 py-2 rounded-lg
-//                            text-sm text-red-500 hover:bg-red-50
-//                            transition-colors border border-red-100"
-//               >
-//                 <X className="w-4 h-4" />
-//                 Clear
-//               </motion.button>
-//             )}
-//           </div>
-//         </motion.div>
-
-//         {/* ── Ticket Grid ─────────────────────────── */}
-//         {isLoading ? (
-//           <div className="flex items-center justify-center py-20">
-//             <motion.div
-//               animate={{ rotate: 360 }}
-//               transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
-//             >
-//               <Loader2 className="w-10 h-10 text-blue-500" />
-//             </motion.div>
-//           </div>
-//         ) : tickets.length === 0 ? (
-//           <motion.div
-//             initial={{ opacity: 0, scale: 0.95 }}
-//             animate={{ opacity: 1, scale: 1 }}
-//             className="flex flex-col items-center justify-center
-//                        py-20 text-center"
-//           >
-//             <div
-//               className="w-20 h-20 bg-blue-50 rounded-2xl flex
-//                             items-center justify-center mb-4"
-//             >
-//               <Ticket className="w-10 h-10 text-blue-400" />
-//             </div>
-//             <h3 className="text-xl font-semibold text-gray-700 mb-2">
-//               {hasActiveFilters ? "No tickets match filters" : "No tickets yet"}
-//             </h3>
-//             <p className="text-gray-400 mb-6 max-w-sm">
-//               {hasActiveFilters
-//                 ? "Try adjusting or clearing your filters"
-//                 : "Create your first ticket to start tracking issues"}
-//             </p>
-//             {!hasActiveFilters && (
-//               <motion.button
-//                 whileHover={{ scale: 1.02 }}
-//                 whileTap={{ scale: 0.98 }}
-//                 onClick={() => setIsCreateModalOpen(true)}
-//                 className="btn-primary flex items-center gap-2"
-//               >
-//                 <Plus className="w-4 h-4" />
-//                 Create First Ticket
-//               </motion.button>
-//             )}
-//           </motion.div>
-//         ) : (
-//           <motion.div
-//             layout
-//             className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4"
-//           >
-//             <AnimatePresence>
-//               {tickets.map((ticket, index) => (
-//                 <TicketCard
-//                   key={ticket._id}
-//                   ticket={ticket}
-//                   index={index}
-//                   members={project?.members || []} // ← pass members
-//                 />
-//               ))}
-//             </AnimatePresence>
-//           </motion.div>
-//         )}
-//       </div>
-
-//       {/* Create Ticket Modal */}
-//       <CreateTicketModal
-//         isOpen={isCreateModalOpen}
-//         onClose={() => setIsCreateModalOpen(false)}
-//         projectId={projectId}
-//         members={project?.members || []}
-//       />
-//     </>
-//   );
-// }
-
-// export default TicketsPage;
-
-// // import { useEffect, useState } from "react";
-// // import { useParams } from "react-router-dom";
-// // import { useDispatch, useSelector } from "react-redux";
-// // import { motion, AnimatePresence } from "framer-motion";
-// // import {
-// //   Plus,
-// //   Search,
-// //   Filter,
-// //   X,
-// //   Ticket,
-// //   Loader2,
-// //   LayoutGrid,
-// //   List,
-// // } from "lucide-react";
-// // import toast from "react-hot-toast";
-// // import {
-// //   fetchTickets,
-// //   selectTickets,
-// //   selectTicketLoading,
-// //   selectTicketError,
-// //   selectTicketFilters,
-// //   setFilters,
-// //   clearFilters,
-// //   clearTicketError,
-// //   deleteTicket,
-// // } from "../features/tickets/ticketSlice";
-// // import { selectProjects } from "../features/projects/projectSlice";
-// // import TicketCard from "../components/tickets/TicketCard";
-// // import CreateTicketModal from "../components/tickets/CreateTicketModal";
-// // import ConfirmModal from "../components/common/ConfirmModal";
-
-// // function TicketsPage() {
-// //   const { projectId } = useParams();
-// //   const dispatch = useDispatch();
-
-// //   const tickets = useSelector(selectTickets);
-// //   const isLoading = useSelector(selectTicketLoading);
-// //   const error = useSelector(selectTicketError);
-// //   const filters = useSelector(selectTicketFilters);
-// //   const projects = useSelector(selectProjects);
-
-// //   const project = projects.find((p) => p._id === projectId);
-
-// //   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
-// //   const [deleteId, setDeleteId] = useState(null);
-// //   const [isDeleting, setIsDeleting] = useState(false);
-// //   const [searchInput, setSearchInput] = useState("");
-
-// //   // Fetch tickets when projectId or filters change
-// //   useEffect(() => {
-// //     if (projectId) {
-// //       dispatch(fetchTickets({ projectId, filters }));
-// //     }
-// //   }, [dispatch, projectId, filters]);
-
-// //   // Show error toast
-// //   useEffect(() => {
-// //     if (error) {
-// //       toast.error(error);
-// //       dispatch(clearTicketError());
-// //     }
-// //   }, [error, dispatch]);
-
-// //   // Debounce search — wait 500ms after typing
-// //   useEffect(() => {
-// //     const timer = setTimeout(() => {
-// //       dispatch(setFilters({ search: searchInput }));
-// //     }, 500);
-// //     return () => clearTimeout(timer);
-// //   }, [searchInput, dispatch]);
-
-// //   const handleFilterChange = (key, value) => {
-// //     dispatch(setFilters({ [key]: value }));
-// //   };
-
-// //   const handleClearFilters = () => {
-// //     dispatch(clearFilters());
-// //     setSearchInput("");
-// //   };
-
-// //   const handleDelete = async () => {
-// //     if (!deleteId) return;
-// //     setIsDeleting(true);
-// //     const result = await dispatch(deleteTicket(deleteId));
-// //     setIsDeleting(false);
-// //     if (deleteTicket.fulfilled.match(result)) {
-// //       toast.success("Ticket deleted");
-// //       setDeleteId(null);
-// //     } else {
-// //       toast.error(result.payload || "Failed to delete");
-// //     }
-// //   };
-
-// //   // Check if any filter is active
-// //   const hasActiveFilters =
-// //     filters.status ||
-// //     filters.priority ||
-// //     filters.type ||
-// //     filters.assignee ||
-// //     filters.search;
-
-// //   // Stats for header
-// //   const stats = {
-// //     total: tickets.length,
-// //     todo: tickets.filter((t) => t.status === "todo").length,
-// //     inProgress: tickets.filter((t) => t.status === "in-progress").length,
-// //     done: tickets.filter((t) => t.status === "done").length,
-// //   };
-
-// //   return (
-// //     <>
-// //       <div className="p-6 max-w-7xl mx-auto">
-// //         {/* Page Header */}
-// //         <motion.div
-// //           initial={{ opacity: 0, y: -20 }}
-// //           animate={{ opacity: 1, y: 0 }}
-// //           className="flex items-start justify-between mb-6"
-// //         >
-// //           <div>
-// //             <div className="flex items-center gap-2 mb-1">
-// //               <span className="text-2xl">{project?.icon || "🎫"}</span>
-// //               <h1 className="text-2xl font-bold text-gray-900">
-// //                 {project?.title || "Tickets"}
-// //               </h1>
-// //             </div>
-// //             <p className="text-gray-500 text-sm">Manage and track all issues</p>
-// //           </div>
-
-// //           <motion.button
-// //             whileHover={{ scale: 1.02 }}
-// //             whileTap={{ scale: 0.98 }}
-// //             onClick={() => setIsCreateModalOpen(true)}
-// //             className="btn-primary flex items-center gap-2 px-5 py-2.5"
-// //           >
-// //             <Plus className="w-4 h-4" />
-// //             New Ticket
-// //           </motion.button>
-// //         </motion.div>
-
-// //         {/* Stats Bar */}
-// //         <motion.div
-// //           initial={{ opacity: 0, y: -10 }}
-// //           animate={{ opacity: 1, y: 0 }}
-// //           transition={{ delay: 0.05 }}
-// //           className="grid grid-cols-4 gap-4 mb-6"
-// //         >
-// //           {[
-// //             {
-// //               label: "Total",
-// //               value: stats.total,
-// //               color: "text-gray-700",
-// //               bg: "bg-gray-50",
-// //             },
-// //             {
-// //               label: "To Do",
-// //               value: stats.todo,
-// //               color: "text-gray-600",
-// //               bg: "bg-gray-100",
-// //             },
-// //             {
-// //               label: "In Progress",
-// //               value: stats.inProgress,
-// //               color: "text-blue-600",
-// //               bg: "bg-blue-50",
-// //             },
-// //             {
-// //               label: "Done",
-// //               value: stats.done,
-// //               color: "text-emerald-600",
-// //               bg: "bg-emerald-50",
-// //             },
-// //           ].map((stat) => (
-// //             <div
-// //               key={stat.label}
-// //               className={`${stat.bg} rounded-xl p-4 text-center`}
-// //             >
-// //               <p className={`text-2xl font-bold ${stat.color}`}>{stat.value}</p>
-// //               <p className="text-xs text-gray-500 mt-0.5">{stat.label}</p>
-// //             </div>
-// //           ))}
-// //         </motion.div>
-
-// //         {/* Search + Filters */}
-// //         <motion.div
-// //           initial={{ opacity: 0 }}
-// //           animate={{ opacity: 1 }}
-// //           transition={{ delay: 0.1 }}
-// //           className="bg-white rounded-xl border border-gray-100 p-4 mb-6
-// //                      shadow-sm"
-// //         >
-// //           <div className="flex flex-wrap gap-3">
-// //             {/* Search */}
-// //             <div className="relative flex-1 min-w-50">
-// //               <Search
-// //                 className="absolute left-3 top-1/2 -translate-y-1/2
-// //                                  w-4 h-4 text-gray-400"
-// //               />
-// //               <input
-// //                 type="text"
-// //                 placeholder="Search tickets..."
-// //                 value={searchInput}
-// //                 onChange={(e) => setSearchInput(e.target.value)}
-// //                 className="input-field pl-10 py-2"
-// //               />
-// //             </div>
-
-// //             {/* Status Filter */}
-// //             <select
-// //               value={filters.status}
-// //               onChange={(e) => handleFilterChange("status", e.target.value)}
-// //               className="input-field w-auto py-2 pr-8"
-// //             >
-// //               <option value="">All Status</option>
-// //               <option value="todo">To Do</option>
-// //               <option value="in-progress">In Progress</option>
-// //               <option value="in-review">In Review</option>
-// //               <option value="done">Done</option>
-// //             </select>
-
-// //             {/* Priority Filter */}
-// //             <select
-// //               value={filters.priority}
-// //               onChange={(e) => handleFilterChange("priority", e.target.value)}
-// //               className="input-field w-auto py-2 pr-8"
-// //             >
-// //               <option value="">All Priority</option>
-// //               <option value="low">🟢 Low</option>
-// //               <option value="medium">🟡 Medium</option>
-// //               <option value="high">🟠 High</option>
-// //               <option value="critical">🔴 Critical</option>
-// //             </select>
-
-// //             {/* Type Filter */}
-// //             <select
-// //               value={filters.type}
-// //               onChange={(e) => handleFilterChange("type", e.target.value)}
-// //               className="input-field w-auto py-2 pr-8"
-// //             >
-// //               <option value="">All Types</option>
-// //               <option value="bug">🐛 Bug</option>
-// //               <option value="feature">✨ Feature</option>
-// //               <option value="improvement">⚡ Improvement</option>
-// //               <option value="task">📋 Task</option>
-// //             </select>
-
-// //             {/* Clear Filters */}
-// //             {hasActiveFilters && (
-// //               <motion.button
-// //                 initial={{ opacity: 0, scale: 0.9 }}
-// //                 animate={{ opacity: 1, scale: 1 }}
-// //                 onClick={handleClearFilters}
-// //                 className="flex items-center gap-1.5 px-3 py-2 rounded-lg
-// //                            text-sm text-red-500 hover:bg-red-50
-// //                            transition-colors border border-red-100"
-// //               >
-// //                 <X className="w-4 h-4" />
-// //                 Clear
-// //               </motion.button>
-// //             )}
-// //           </div>
-// //         </motion.div>
-
-// //         {/* Ticket List */}
-// //         {isLoading ? (
-// //           <div className="flex items-center justify-center py-20">
-// //             <motion.div
-// //               animate={{ rotate: 360 }}
-// //               transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
-// //             >
-// //               <Loader2 className="w-10 h-10 text-blue-500" />
-// //             </motion.div>
-// //           </div>
-// //         ) : tickets.length === 0 ? (
-// //           <motion.div
-// //             initial={{ opacity: 0, scale: 0.95 }}
-// //             animate={{ opacity: 1, scale: 1 }}
-// //             className="flex flex-col items-center justify-center
-// //                        py-20 text-center"
-// //           >
-// //             <div
-// //               className="w-20 h-20 bg-blue-50 rounded-2xl flex
-// //                             items-center justify-center mb-4"
-// //             >
-// //               <Ticket className="w-10 h-10 text-blue-400" />
-// //             </div>
-// //             <h3 className="text-xl font-semibold text-gray-700 mb-2">
-// //               {hasActiveFilters ? "No tickets match filters" : "No tickets yet"}
-// //             </h3>
-// //             <p className="text-gray-400 mb-6 max-w-sm">
-// //               {hasActiveFilters
-// //                 ? "Try adjusting or clearing your filters"
-// //                 : "Create your first ticket to start tracking issues"}
-// //             </p>
-// //             {!hasActiveFilters && (
-// //               <motion.button
-// //                 whileHover={{ scale: 1.02 }}
-// //                 whileTap={{ scale: 0.98 }}
-// //                 onClick={() => setIsCreateModalOpen(true)}
-// //                 className="btn-primary flex items-center gap-2"
-// //               >
-// //                 <Plus className="w-4 h-4" />
-// //                 Create First Ticket
-// //               </motion.button>
-// //             )}
-// //           </motion.div>
-// //         ) : (
-// //           <motion.div
-// //             layout
-// //             className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4"
-// //           >
-// //             <AnimatePresence>
-// //               {tickets.map((ticket, index) => (
-// //                 <TicketCard
-// //                   key={ticket._id}
-// //                   ticket={ticket}
-// //                   index={index}
-// //                   onClick={() => setDeleteId(null)}
-// //                 />
-// //               ))}
-// //             </AnimatePresence>
-// //           </motion.div>
-// //         )}
-// //       </div>
-
-// //       {/* Create Ticket Modal */}
-// //       <CreateTicketModal
-// //         isOpen={isCreateModalOpen}
-// //         onClose={() => setIsCreateModalOpen(false)}
-// //         projectId={projectId}
-// //         members={project?.members || []}
-// //       />
-
-// //       {/* Delete Confirm Modal */}
-// //       <ConfirmModal
-// //         isOpen={!!deleteId}
-// //         onClose={() => setDeleteId(null)}
-// //         onConfirm={handleDelete}
-// //         isLoading={isDeleting}
-// //         title="Delete Ticket?"
-// //         message="This ticket will be permanently deleted."
-// //         confirmText="Delete Ticket"
-// //       />
-// //     </>
-// //   );
-// // }
-
-// // export default TicketsPage;

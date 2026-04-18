@@ -1,13 +1,5 @@
 import { motion } from "framer-motion";
 
-/*
-  Skeleton — animated placeholder shown while content loads.
-  Mimics the shape of real content so UI doesn't jump.
-  
-  shimmer effect = gradient that slides left to right
-*/
-
-// ── Base Shimmer Animation ────────────────────────────
 function SkeletonBase({ className = "" }) {
   return (
     <div
@@ -28,14 +20,12 @@ function SkeletonBase({ className = "" }) {
   );
 }
 
-// ── Text Line Skeleton ────────────────────────────────
 export function SkeletonText({ width = "100%", className = "" }) {
   return (
     <SkeletonBase className={`h-4 rounded-md ${className}`} style={{ width }} />
   );
 }
 
-// ── Circle Skeleton (avatars) ─────────────────────────
 export function SkeletonCircle({ size = 40 }) {
   return (
     <SkeletonBase
@@ -45,7 +35,6 @@ export function SkeletonCircle({ size = 40 }) {
   );
 }
 
-// ── Box Skeleton ──────────────────────────────────────
 export function SkeletonBox({ height = 100, className = "" }) {
   return (
     <SkeletonBase
@@ -55,30 +44,22 @@ export function SkeletonBox({ height = 100, className = "" }) {
   );
 }
 
-// ── Project Card Skeleton ─────────────────────────────
 export function ProjectCardSkeleton() {
   return (
     <div
       className="bg-white rounded-2xl border border-gray-100
                     p-5 shadow-sm"
     >
-      {/* Top row */}
       <div className="flex items-start justify-between mb-4">
         <SkeletonBase className="w-12 h-12 rounded-xl" />
         <SkeletonBase className="w-16 h-6 rounded-full" />
       </div>
 
-      {/* Title */}
       <SkeletonBase className="h-5 w-3/4 rounded-md mb-2" />
-
-      {/* Description */}
       <SkeletonBase className="h-4 w-full rounded-md mb-1.5" />
       <SkeletonBase className="h-4 w-2/3 rounded-md mb-5" />
-
-      {/* Color bar */}
       <SkeletonBase className="h-1 w-full rounded-full mb-5" />
 
-      {/* Footer */}
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-1">
           {[1, 2, 3].map((i) => (
@@ -95,14 +76,12 @@ export function ProjectCardSkeleton() {
   );
 }
 
-// ── Ticket Card Skeleton ──────────────────────────────
 export function TicketCardSkeleton() {
   return (
     <div
       className="bg-white rounded-xl border border-gray-100
                     p-4 shadow-sm"
     >
-      {/* Top */}
       <div className="flex items-center justify-between mb-3">
         <div className="flex items-center gap-2">
           <SkeletonBase className="w-5 h-5 rounded" />
@@ -112,18 +91,12 @@ export function TicketCardSkeleton() {
         <SkeletonBase className="w-6 h-6 rounded-lg" />
       </div>
 
-      {/* Title */}
       <SkeletonBase className="h-4 w-full rounded mb-1.5" />
       <SkeletonBase className="h-4 w-3/4 rounded mb-3" />
-
-      {/* Description */}
       <SkeletonBase className="h-3 w-full rounded mb-1" />
       <SkeletonBase className="h-3 w-2/3 rounded mb-3" />
-
-      {/* Status */}
       <SkeletonBase className="h-6 w-24 rounded-full mb-3" />
 
-      {/* Footer */}
       <div
         className="flex items-center justify-between pt-3
                       border-t border-gray-50"
@@ -138,7 +111,6 @@ export function TicketCardSkeleton() {
   );
 }
 
-// ── Kanban Card Skeleton ──────────────────────────────
 export function KanbanCardSkeleton() {
   return (
     <div
@@ -169,14 +141,11 @@ export function KanbanCardSkeleton() {
   );
 }
 
-// ── Dashboard Skeleton ────────────────────────────────
 export function DashboardSkeleton() {
   return (
     <div className="max-w-7xl mx-auto space-y-6">
-      {/* Welcome banner */}
       <SkeletonBase className="h-36 w-full rounded-2xl" />
 
-      {/* Stats */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         {[1, 2, 3, 4].map((i) => (
           <div
@@ -193,7 +162,6 @@ export function DashboardSkeleton() {
         ))}
       </div>
 
-      {/* Bottom grid */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <div
           className="bg-white rounded-2xl border border-gray-100
@@ -231,15 +199,12 @@ export function DashboardSkeleton() {
   );
 }
 
-// ── Ticket Detail Skeleton ────────────────────────────
 export function TicketDetailSkeleton() {
   return (
     <div className="max-w-5xl mx-auto">
-      {/* Back button */}
       <SkeletonBase className="h-5 w-32 rounded mb-6" />
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Left */}
         <div className="lg:col-span-2 space-y-5">
           <div
             className="bg-white rounded-2xl border border-gray-100
@@ -279,7 +244,6 @@ export function TicketDetailSkeleton() {
           </div>
         </div>
 
-        {/* Right */}
         <div className="space-y-4">
           {[120, 180, 200, 160].map((h, i) => (
             <SkeletonBase
@@ -294,7 +258,6 @@ export function TicketDetailSkeleton() {
   );
 }
 
-// ── Comment Skeleton ──────────────────────────────────
 export function CommentSkeleton() {
   return (
     <div className="flex gap-3">
@@ -314,7 +277,6 @@ export function CommentSkeleton() {
   );
 }
 
-// ── Kanban Column Skeleton ────────────────────────────
 export function KanbanBoardSkeleton() {
   return (
     <div className="flex gap-5 overflow-hidden">
@@ -330,7 +292,6 @@ export function KanbanBoardSkeleton() {
             <SkeletonBase className="w-7 h-7 rounded-lg" />
           </div>
 
-          {/* Cards */}
           <div
             className="bg-gray-50 rounded-2xl p-3 space-y-3
                           min-h-[500px]"

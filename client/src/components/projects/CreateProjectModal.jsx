@@ -8,7 +8,6 @@ import {
   selectProjectLoading,
 } from "../../features/projects/projectSlice";
 
-// Preset colors and icons to pick from
 const COLORS = [
   "#3b82f6",
   "#8b5cf6",
@@ -55,7 +54,6 @@ function CreateProjectModal({ isOpen, onClose }) {
     <AnimatePresence>
       {isOpen && (
         <>
-          {/* Backdrop */}
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -64,7 +62,6 @@ function CreateProjectModal({ isOpen, onClose }) {
             className="fixed inset-0 bg-black/40 backdrop-blur-sm z-40"
           />
 
-          {/* Modal */}
           <motion.div
             initial={{ opacity: 0, scale: 0.95, y: 20 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
@@ -77,7 +74,6 @@ function CreateProjectModal({ isOpen, onClose }) {
                             border border-gray-100"
               onClick={(e) => e.stopPropagation()}
             >
-              {/* Header */}
               <div
                 className="flex items-center justify-between p-6 border-b
                               border-gray-100"
@@ -98,9 +94,7 @@ function CreateProjectModal({ isOpen, onClose }) {
                 </button>
               </div>
 
-              {/* Form */}
               <form onSubmit={handleSubmit} className="p-6 space-y-5">
-                {/* Preview */}
                 <div
                   className="flex items-center gap-4 p-4 rounded-xl
                                 bg-gray-50 border border-gray-100"
@@ -122,7 +116,6 @@ function CreateProjectModal({ isOpen, onClose }) {
                   </div>
                 </div>
 
-                {/* Title */}
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1.5">
                     Project Title <span className="text-red-500">*</span>
@@ -140,7 +133,6 @@ function CreateProjectModal({ isOpen, onClose }) {
                   />
                 </div>
 
-                {/* Description */}
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1.5">
                     Description
@@ -161,7 +153,6 @@ function CreateProjectModal({ isOpen, onClose }) {
                   />
                 </div>
 
-                {/* Icon Picker */}
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
                     Icon
@@ -186,7 +177,6 @@ function CreateProjectModal({ isOpen, onClose }) {
                   </div>
                 </div>
 
-                {/* Color Picker */}
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
                     Color
@@ -209,7 +199,6 @@ function CreateProjectModal({ isOpen, onClose }) {
                   </div>
                 </div>
 
-                {/* Buttons */}
                 <div className="flex gap-3 pt-2">
                   <button
                     type="button"

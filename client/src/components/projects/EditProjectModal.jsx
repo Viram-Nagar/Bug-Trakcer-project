@@ -33,7 +33,6 @@ function EditProjectModal({ isOpen, onClose, project }) {
     status: "active",
   });
 
-  // Pre-fill form when project loads
   useEffect(() => {
     if (project) {
       setFormData({
@@ -137,7 +136,6 @@ function EditProjectModal({ isOpen, onClose, project }) {
                   </div>
                 </div>
 
-                {/* Title */}
                 <div>
                   <label
                     className="block text-sm font-medium
@@ -158,7 +156,6 @@ function EditProjectModal({ isOpen, onClose, project }) {
                   />
                 </div>
 
-                {/* Description */}
                 <div>
                   <label
                     className="block text-sm font-medium
@@ -182,7 +179,6 @@ function EditProjectModal({ isOpen, onClose, project }) {
                   />
                 </div>
 
-                {/* Status */}
                 <div>
                   <label
                     className="block text-sm font-medium
@@ -212,7 +208,6 @@ function EditProjectModal({ isOpen, onClose, project }) {
                   </div>
                 </div>
 
-                {/* Icon Picker */}
                 <div>
                   <label
                     className="block text-sm font-medium
@@ -240,7 +235,6 @@ function EditProjectModal({ isOpen, onClose, project }) {
                   </div>
                 </div>
 
-                {/* Color Picker */}
                 <div>
                   <label
                     className="block text-sm font-medium
@@ -266,7 +260,6 @@ function EditProjectModal({ isOpen, onClose, project }) {
                   </div>
                 </div>
 
-                {/* Buttons */}
                 <div className="flex gap-3 pt-2">
                   <button
                     type="button"
