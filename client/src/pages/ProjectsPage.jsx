@@ -14,6 +14,7 @@ import { ProjectCardSkeleton } from "../components/common/Skeleton";
 import ProjectCard from "../components/projects/ProjectCard";
 import CreateProjectModal from "../components/projects/CreateProjectModal";
 import PageTransition from "../components/common/PageTransition";
+import EmptyState from "../components/common/EmptyState";
 
 function ProjectsPage() {
   const dispatch = useDispatch();
