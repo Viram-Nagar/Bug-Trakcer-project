@@ -7,6 +7,7 @@
 Built with the MERN Stack · Redux Toolkit · Framer Motion
 
 [![Live Demo](https://img.shields.io/badge/Live%20Demo-Visit%20App-blue?style=for-the-badge)]((https://bug-trakcer.vercel.app/dashboard))
+[![Visit App](https://img.shields.io/badge/🚀_Live_Demo-Visit_App-blue?style=for-the-badge)](https://bug-trakcer.vercel.app)
 
 </div>
 
