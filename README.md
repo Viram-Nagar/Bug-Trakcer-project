@@ -6,8 +6,7 @@
 
 Built with the MERN Stack · Redux Toolkit · Framer Motion
 
-[![Live Demo](https://img.shields.io/badge/Live%20Demo-Visit%20App-blue?style=for-the-badge)](https://your-app.vercel.app)
-[![Backend](https://img.shields.io/badge/Backend-Render-green?style=for-the-badge)](https://your-api.render.com)
+[![Visit App](https://img.shields.io/badge/🚀_Live_Demo-Visit_App-blue?style=for-the-badge)](https://bug-trakcer.vercel.app)
 
 </div>
 
@@ -30,11 +29,6 @@ Built with the MERN Stack · Redux Toolkit · Framer Motion
 
 ---
 
-## 🖼️ Screenshots
-
-> Add screenshots here after deployment
-
----
 
 ## 🧰 Tech Stack
 
@@ -113,62 +107,6 @@ bug-tracker/
 
 ---
 
-## 🚀 Getting Started
-
-### Prerequisites
-
-- Node.js 18+
-- MongoDB Atlas account (free tier works)
-
-### 1. Clone the repo
-
-```bash
-git clone https://github.com/YOUR_USERNAME/bug-tracker.git
-cd bug-tracker
-```
-
-### 2. Setup Backend
-
-```bash
-cd server
-npm install
-```
-
-Create `server/.env`:
-
-```env
-PORT=5000
-MONGO_URI=mongodb+srv://username:password@cluster.mongodb.net/bugtracker
-JWT_SECRET=your_super_secret_key_min_32_chars
-CLIENT_URL=http://localhost:5173
-NODE_ENV=development
-```
-
-```bash
-npm run dev
-# Server runs on http://localhost:5000
-```
-
-### 3. Setup Frontend
-
-```bash
-cd ../client
-npm install
-```
-
-Create `client/.env`:
-
-```env
-VITE_API_URL=http://localhost:5000/api
-```
-
-```bash
-npm run dev
-# App runs on http://localhost:5173
-```
-
----
-
 ## 🔌 API Reference
 
 ### Auth
@@ -214,54 +152,6 @@ DELETE /api/comments/:id           Delete comment
 
 ---
 
-## 🔐 Role Permissions
-
-| Action            | Owner | Admin | Manager | Developer | Viewer |
-| ----------------- | :---: | :---: | :-----: | :-------: | :----: |
-| Edit any ticket   |  ✅   |  ✅   |   ✅    |    ❌     |   ❌   |
-| Edit own ticket   |  ✅   |  ✅   |   ✅    |    ✅     |   ❌   |
-| Delete any ticket |  ✅   |  ✅   |   ❌    |    ❌     |   ❌   |
-| Delete own ticket |  ✅   |  ✅   |   ✅    |    ✅     |   ❌   |
-| Create tickets    |  ✅   |  ✅   |   ✅    |    ✅     |   ❌   |
-| Add comments      |  ✅   |  ✅   |   ✅    |    ✅     |   ❌   |
-| Manage members    |  ✅   |  ❌   |   ❌    |    ❌     |   ❌   |
-
----
-
-## 📅 Built In 14 Days
-
-| Day | Feature                        |
-| --- | ------------------------------ |
-| 1   | MERN setup, Redux, Tailwind v4 |
-| 2   | JWT Authentication             |
-| 3   | Projects CRUD + Members        |
-| 4   | Tickets backend APIs           |
-| 5   | Tickets frontend UI            |
-| 6   | Dashboard + Responsive sidebar |
-| 7   | Testing + GitHub               |
-| 8   | Kanban drag & drop             |
-| 9   | Comments system                |
-| 10  | Advanced filters + sort        |
-| 11  | Role-based permissions         |
-| 12  | Deployment                     |
-| 13  | Polish + Skeleton UI           |
-| 14  | Final testing + demo           |
-
----
-
-## 🌐 Deployment
-
-- **Frontend** → [Vercel](https://vercel.com)
-- **Backend** → [Render](https://render.com)
-- **Database** → [MongoDB Atlas](https://mongodb.com/atlas)
-
----
-
-## 📄 License
-
-MIT © 2025 [Your Name](https://github.com/YOUR_USERNAME)
-
----
 
 <div align="center">
   <p>Built with ❤️ as a learning project</p>
