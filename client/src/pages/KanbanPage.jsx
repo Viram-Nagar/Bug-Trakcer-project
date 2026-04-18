@@ -258,7 +258,6 @@ function KanbanPage() {
             sensors={sensors}
             collisionDetection={closestCorners}
             onDragStart={handleDragStart}
-            onDragOver={handleDragOver}
             onDragEnd={handleDragEnd}
           >
             {/* Horizontal scroll container */}
