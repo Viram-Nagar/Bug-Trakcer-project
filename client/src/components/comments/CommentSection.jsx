@@ -117,14 +117,14 @@ function CommentItem({ comment, onReply, onEdit, onDelete, currentUser }) {
 
             {isAuthor && (
               <>
-                {/* <button
+                <button
                   onClick={() => onEdit(comment)}
                   className="flex items-center gap-1 text-xs text-gray-400
                              hover:text-blue-500 transition-colors py-1"
                 >
                   <Pencil className="w-3 h-3" />
                   Edit
-                </button> */}
+                </button>
                 <button
                   onClick={() => onDelete(comment._id)}
                   className="flex items-center gap-1 text-xs text-gray-400

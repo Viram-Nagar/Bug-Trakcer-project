@@ -158,7 +158,7 @@ function ProjectDetailPage() {
                   <Users2 className="w-4 h-4" />
                   <span className="hidden sm:inline">Members</span>
                 </motion.button>
-                <motion.button
+                {/* <motion.button
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
                   onClick={() => setShowEditModal(true)}
@@ -170,7 +170,7 @@ function ProjectDetailPage() {
                 >
                   <Pencil className="w-4 h-4" />
                   Edit
-                </motion.button>
+                </motion.button> */}
 
                 <motion.button
                   whileHover={{ scale: 1.05 }}
